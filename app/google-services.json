@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "46287145282",
+    "firebase_url": "https://tertiary-program-reccommender-default-rtdb.firebaseio.com",
+    "project_id": "tertiary-program-reccommender",
+    "storage_bucket": "tertiary-program-reccommender.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:46287145282:android:c89f32e2a272322b39a0db",
+        "android_client_info": {
+          "package_name": "com.example.tertiaryprogramreccommender"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrgDQptR1AZuJ-Q9de4D_hEc42VlnG-HY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
