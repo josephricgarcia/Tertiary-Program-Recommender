@@ -60,15 +60,7 @@ fun AptitudeTestActivity(navController: NavHostController, controller: AptitudeT
         controller.refreshQuestions()  // Ensure questions are shuffled at the start
     }
 
-    // Countdown timer logic with auto-submit when time runs out
-    LaunchedEffect(remainingTime) {
-        while (remainingTime > 0) {
-            delay(1000L)
-            remainingTime--
-        }
-        // When time runs out, automatically submit the answers
-        submitTest(selectedAnswers.value, controller, navController)
-    }
+
 
 
     // Calculate hours, minutes, and seconds
@@ -161,6 +153,16 @@ fun AptitudeTestActivity(navController: NavHostController, controller: AptitudeT
                 }
             } else {
 
+                // Countdown timer logic with auto-submit when time runs out
+                LaunchedEffect(remainingTime) {
+                    while (remainingTime > 0) {
+                        delay(1000L)
+                        remainingTime--
+                    }
+                    // When time runs out, automatically submit the answers
+                    submitTest(selectedAnswers.value, controller, navController)
+                }
+
 
                 Column(
                     modifier = Modifier
@@ -195,12 +197,12 @@ fun AptitudeTestActivity(navController: NavHostController, controller: AptitudeT
                         color = Color.Black
                     )
 
-                   /* Row(
+                   Row(
                         modifier = Modifier
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
-                    ) {*/
+                    ) {
 
                         LinearProgressIndicator(
                             progress = overallProgress, // Reflect overall test progress
@@ -210,7 +212,7 @@ fun AptitudeTestActivity(navController: NavHostController, controller: AptitudeT
                             color = Color(0xFFFFFFFF),
                             trackColor = Color.DarkGray,
                         )
-                       /* // Display the formatted time
+                       // Display the formatted time
                         Text(
                             text = " $timeText ",
                             fontFamily = Roboto,
@@ -221,7 +223,7 @@ fun AptitudeTestActivity(navController: NavHostController, controller: AptitudeT
                         )
 
 
-                    }*/
+                    }
                 }
 
 
