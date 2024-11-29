@@ -245,7 +245,7 @@ fun GetStartedButton(navController: NavHostController) {
             navController.navigate("LoginActivity")
         },
         shape = RoundedCornerShape(20.dp),
-        colors = ButtonDefaults.buttonColors(Color(0xFF011952))
+        colors = ButtonDefaults.buttonColors(Color(0xFF011952)),
     ) {
         Text(
             text = "GET STARTED",

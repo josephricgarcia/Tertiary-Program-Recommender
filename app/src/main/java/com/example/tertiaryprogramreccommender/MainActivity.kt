@@ -16,6 +16,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -144,6 +145,7 @@ class MainActivity : ComponentActivity() {
                     // Retry Button
                     Button(
                         onClick = onRetryClick,
+                        colors = ButtonDefaults.buttonColors(Color(0xFF011952)),
                         modifier = Modifier.fillMaxWidth(0.5f), // Adjust button width
                     ) {
                         Text(

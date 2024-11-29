@@ -73,6 +73,7 @@ dependencies {
     implementation (libs.ui)
     implementation (libs.material3)
     implementation (libs.androidx.navigation.compose.v253)
+    implementation (libs.androidx.hilt.navigation.compose)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
