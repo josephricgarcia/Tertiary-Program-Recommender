@@ -1,5 +1,6 @@
 package com.example.tertiaryprogramreccommender
 
+import Roboto
 import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
@@ -15,12 +16,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.example.tertiaryprogramreccommender.ui.theme.TertiaryProgramRecommenderTheme
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
 
@@ -48,9 +45,25 @@ class MainActivity : ComponentActivity() {
             TertiaryProgramRecommenderTheme {
                 StatusBarColorWrapper {
                     val context = LocalContext.current
-                    var isConnected by remember { mutableStateOf(isNetworkAvailable(context)) }
 
-                    if (!isConnected) {
+                    // Track the network connection status and loading state
+                    var isConnected by remember { mutableStateOf(false) }
+                    var isLoading by remember { mutableStateOf(true) }
+
+                    // Launching a coroutine for network check
+                    LaunchedEffect(Unit) {
+                        // Simulate loading delay
+                        delay(1000)
+
+                        // Check network availability
+                        isConnected = isNetworkAvailable(context)
+                        isLoading = false // Set loading to false after the check
+                    }
+
+                    // Show a loading screen or splash screen while checking the network
+                    if (isLoading) {
+                        SplashScreen()
+                    } else if (!isConnected) {
                         NoInternetScreen {
                             // Recheck internet connection
                             isConnected = isNetworkAvailable(context)
@@ -86,6 +99,63 @@ class MainActivity : ComponentActivity() {
 
         val capabilities = connectivityManager.getNetworkCapabilities(network as Network?)
         return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+    }
+
+    // Composable for displaying a splash screen
+    @Composable
+    fun SplashScreen() {
+        Card(
+            modifier = Modifier.fillMaxSize(),
+            shape = RoundedCornerShape(0.dp) // Full-screen card with no rounded corners
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+
+                // Background Image
+                Image(
+                    painter = painterResource(id = R.drawable.background),
+                    contentDescription = "Background Image",
+                    contentScale = ContentScale.Crop, // Better cropping for full-screen visuals
+                    modifier = Modifier.fillMaxSize()
+                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    Text(
+                        text = "TERTIARY PROGRAM",
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontFamily = Roboto,
+                        textAlign = TextAlign.Center,
+                        color = Color.Black
+                    )
+
+                    Text(
+                        text = "RECOMMENDER",
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontFamily = Roboto,
+                        textAlign = TextAlign.Center,
+                        color = Color.Black
+                    )
+
+                Image(
+                    painter = painterResource(id = R.drawable.app_logo),
+                    contentDescription = "Logo",
+                    modifier = Modifier.size(250.dp)
+                )
+            LinearProgressIndicator() // Show loading spinner
+                }
+            }
+        }
     }
 
     // Composable for displaying a no internet screen with a retry button
@@ -158,8 +228,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-
 
     @Composable
     fun StatusBarColorWrapper(content: @Composable () -> Unit) {
