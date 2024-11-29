@@ -83,201 +83,214 @@ fun SignupActivity(
         }
     }
 
+    var isConnected by remember { mutableStateOf(isNetworkAvailable(context)) }
 
-    Card(
-        modifier = Modifier.fillMaxSize(),
-        shape = RoundedCornerShape(0.dp) // Rounded corners for the card
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            // Background Image inside the Box
-            Image(
-                painter = painterResource(id = R.drawable.background),
-                contentDescription = "Background Image",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier.fillMaxSize()
-            )
+    if (!isConnected) {
+        // Show the no internet screen
+        NoInternetScreen {
+            // Recheck internet connection
+            isConnected = isNetworkAvailable(context)
+        }
+    } else {
 
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+
+        Card(
+            modifier = Modifier.fillMaxSize(),
+            shape = RoundedCornerShape(0.dp) // Rounded corners for the card
+        ) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                // Background Image inside the Box
                 Image(
-                    painter = painterResource(id = R.drawable.app_logo),
-                    contentDescription = "Logo",
-                    modifier = Modifier.size(280.dp)
+                    painter = painterResource(id = R.drawable.background),
+                    contentDescription = "Background Image",
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier.fillMaxSize()
                 )
 
-                Text(
-                    text = "Let's Get You Started",
-                    color = Color.Black,
-                    fontFamily = Roboto,
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = "Create Your Account",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = Roboto,
-                    textAlign = TextAlign.Center,
-                    color = Color.Black
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                OutlinedTextField(
-                    modifier = Modifier
-                        .padding(horizontal = 15.dp)
-                        .size(width = 300.dp, height = 60.dp),
-                    value = username,
-                    onValueChange = { username = it },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.person),
-                            contentDescription = "Username Icon"
-                        )
-                    },
-                    label = { Text("Username") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    singleLine = true
-                )
-
-                Spacer(modifier = Modifier.height(5.dp))
-
-                OutlinedTextField(
-                    modifier = Modifier
-                        .padding(horizontal = 15.dp)
-                        .size(width = 300.dp, height = 60.dp),
-                    value = email,
-                    onValueChange = { email = it },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.email_icon),
-                            contentDescription = "Email"
-                        )
-                    },
-                    label = { Text("Email Address") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    singleLine = true
-                )
-
-                Spacer(modifier = Modifier.height(5.dp))
-
-                OutlinedTextField(
-                    modifier = Modifier
-                        .padding(horizontal = 15.dp)
-                        .size(width = 300.dp, height = 60.dp),
-                    value = password,
-                    onValueChange = { password = it },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.password_lock),
-                            contentDescription = "Lock Icon"
-                        )
-                    },
-                    label = { Text("Password") },
-                    visualTransformation = if (passwordVisible) {
-                        VisualTransformation.None
-                    } else {
-                        PasswordVisualTransformation()
-                    },
-                    trailingIcon = {
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                            Icon(
-                                painter = if (passwordVisible) painterResource(id = R.drawable.password_visibility_on) else painterResource(
-                                    id = R.drawable.password_visibility_off
-                                ),
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
-                            )
-                        }
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
-                    ),
-                    singleLine = true
-                )
-
-                Spacer(modifier = Modifier.height(5.dp))
-
-                OutlinedTextField(
-                    modifier = Modifier
-                        .padding(horizontal = 15.dp)
-                        .size(width = 300.dp, height = 60.dp),
-                    value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.password_lock),
-                            contentDescription = "Lock Icon"
-                        )
-                    },
-                    label = { Text("Confirm Password") },
-                    visualTransformation = if (confirmPasswordVisible) {
-                        VisualTransformation.None
-                    } else {
-                        PasswordVisualTransformation()
-                    },
-                    trailingIcon = {
-                        IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
-                            Icon(
-                                painter = if (confirmPasswordVisible) painterResource(id = R.drawable.password_visibility_on) else painterResource(
-                                    id = R.drawable.password_visibility_off
-                                ),
-                                contentDescription = if (confirmPasswordVisible) "Hide confirm password" else "Show confirm password"
-                            )
-                        }
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
-                    ),
-                    singleLine = true
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(
-                    onClick = {
-                        user.handleSignup(username, email, password, confirmPassword)
-                    },
-                    modifier = Modifier.size(300.dp, 40.dp),
-                    colors = ButtonDefaults.buttonColors(Color(0xFF011952))
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "CREATE ACCOUNT", fontFamily = Roboto)
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(horizontalArrangement = Arrangement.Center) {
-                    Text(text = "Already have an account? ", fontFamily = Roboto)
-                    Text(
-                        text = "Sign In",
-                        fontFamily = Roboto,
-
-                        modifier = Modifier.clickable {
-                            navController.navigate("LoginActivity")
-                        },
-                        textDecoration = TextDecoration.Underline,
-                        fontWeight = FontWeight.ExtraBold
+                    Image(
+                        painter = painterResource(id = R.drawable.app_logo),
+                        contentDescription = "Logo",
+                        modifier = Modifier.size(280.dp)
                     )
-                }
 
-                TextButton(
-                    onClick = { navController.navigate("AboutUs") },
-                    modifier = Modifier.padding(16.dp)
-                ) {
                     Text(
-                        text = "ABOUT US",
-                        fontFamily = Roboto,
+                        text = "Let's Get You Started",
                         color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
+                        fontFamily = Roboto,
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold
                     )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Create Your Account",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = Roboto,
+                        textAlign = TextAlign.Center,
+                        color = Color.Black
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .padding(horizontal = 15.dp)
+                            .size(width = 300.dp, height = 60.dp),
+                        value = username,
+                        onValueChange = { username = it },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.person),
+                                contentDescription = "Username Icon"
+                            )
+                        },
+                        label = { Text("Username") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        singleLine = true
+                    )
+
+                    Spacer(modifier = Modifier.height(5.dp))
+
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .padding(horizontal = 15.dp)
+                            .size(width = 300.dp, height = 60.dp),
+                        value = email,
+                        onValueChange = { email = it },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.email_icon),
+                                contentDescription = "Email"
+                            )
+                        },
+                        label = { Text("Email Address") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                        singleLine = true
+                    )
+
+                    Spacer(modifier = Modifier.height(5.dp))
+
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .padding(horizontal = 15.dp)
+                            .size(width = 300.dp, height = 60.dp),
+                        value = password,
+                        onValueChange = { password = it },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.password_lock),
+                                contentDescription = "Lock Icon"
+                            )
+                        },
+                        label = { Text("Password") },
+                        visualTransformation = if (passwordVisible) {
+                            VisualTransformation.None
+                        } else {
+                            PasswordVisualTransformation()
+                        },
+                        trailingIcon = {
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(
+                                    painter = if (passwordVisible) painterResource(id = R.drawable.password_visibility_on) else painterResource(
+                                        id = R.drawable.password_visibility_off
+                                    ),
+                                    contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                                )
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done
+                        ),
+                        singleLine = true
+                    )
+
+                    Spacer(modifier = Modifier.height(5.dp))
+
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .padding(horizontal = 15.dp)
+                            .size(width = 300.dp, height = 60.dp),
+                        value = confirmPassword,
+                        onValueChange = { confirmPassword = it },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.password_lock),
+                                contentDescription = "Lock Icon"
+                            )
+                        },
+                        label = { Text("Confirm Password") },
+                        visualTransformation = if (confirmPasswordVisible) {
+                            VisualTransformation.None
+                        } else {
+                            PasswordVisualTransformation()
+                        },
+                        trailingIcon = {
+                            IconButton(onClick = {
+                                confirmPasswordVisible = !confirmPasswordVisible
+                            }) {
+                                Icon(
+                                    painter = if (confirmPasswordVisible) painterResource(id = R.drawable.password_visibility_on) else painterResource(
+                                        id = R.drawable.password_visibility_off
+                                    ),
+                                    contentDescription = if (confirmPasswordVisible) "Hide confirm password" else "Show confirm password"
+                                )
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done
+                        ),
+                        singleLine = true
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = {
+                            user.handleSignup(username, email, password, confirmPassword)
+                        },
+                        modifier = Modifier.size(300.dp, 40.dp),
+                        colors = ButtonDefaults.buttonColors(Color(0xFF011952))
+                    ) {
+                        Text(text = "CREATE ACCOUNT", fontFamily = Roboto)
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(horizontalArrangement = Arrangement.Center) {
+                        Text(text = "Already have an account? ", fontFamily = Roboto)
+                        Text(
+                            text = "Sign In",
+                            fontFamily = Roboto,
+
+                            modifier = Modifier.clickable {
+                                navController.navigate("LoginActivity")
+                            },
+                            textDecoration = TextDecoration.Underline,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                    }
+
+                    TextButton(
+                        onClick = { navController.navigate("AboutUs") },
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text = "ABOUT US",
+                            fontFamily = Roboto,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }
