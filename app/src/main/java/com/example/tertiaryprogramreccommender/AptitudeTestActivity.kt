@@ -46,7 +46,8 @@ fun AptitudeTestActivity(navController: NavHostController, controller: AptitudeT
     val currentTestType = testTypes.getOrElse(currentIndex.value) { "" }
 
     // Ensure the answers map is preserved across recompositions
-    val selectedAnswers = remember { mutableStateOf(mutableMapOf<String, MutableMap<String, String?>>()) }
+    val selectedAnswers =
+        remember { mutableStateOf(mutableMapOf<String, MutableMap<String, String?>>()) }
 
     if (selectedAnswers.value[currentTestType] == null) {
         selectedAnswers.value[currentTestType] = mutableMapOf()
@@ -70,7 +71,6 @@ fun AptitudeTestActivity(navController: NavHostController, controller: AptitudeT
     }
 
 
-
     // Calculate hours, minutes, and seconds
     val hours = remainingTime / 3600
     val minutes = (remainingTime % 3600) / 60
@@ -90,7 +90,8 @@ fun AptitudeTestActivity(navController: NavHostController, controller: AptitudeT
     val totalQuestions = questionsMap.values.sumOf { it.size }
 
 // Calculate the overall progress as a fraction
-    val overallProgress = if (totalQuestions > 0) totalAnsweredQuestions / totalQuestions.toFloat() else 0f
+    val overallProgress =
+        if (totalQuestions > 0) totalAnsweredQuestions / totalQuestions.toFloat() else 0f
 
     val numOfTestTypes = selectedAnswers.value.count { testType ->
         val answers = selectedAnswers.value[testType.key]
@@ -103,19 +104,6 @@ fun AptitudeTestActivity(navController: NavHostController, controller: AptitudeT
     var showDialog by remember { mutableStateOf(false) }
     val allTestTypesAnswered = testTypes.all { testType ->
         selectedAnswers.value[testType]?.size == questionsMap[testType]?.size
-    }
-
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            title = { Text("Incomplete Answers") },
-            text = { Text("You need to answer all the questions before proceeding or submitting the test.") },
-            confirmButton = {
-                TextButton(onClick = { showDialog = false }) {
-                    Text("OK")
-                }
-            }
-        )
     }
 
     if (showDialog) {
@@ -147,227 +135,218 @@ fun AptitudeTestActivity(navController: NavHostController, controller: AptitudeT
             )
 
             if (isLoading) {
-                Box(
+                Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color(0x80000000))
-                        .align(Alignment.Center)
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+
                 ) {
-                    Card(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .width(320.dp)
-                            .align(Alignment.Center),
-                        shape = RoundedCornerShape(16.dp),
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Loading Aptitude Test,\n please wait...",
-                                fontFamily = Roboto,
-                                fontSize = 18.sp,
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Black
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            CircularProgressIndicator(
-                                modifier = Modifier.width(64.dp),
-                                color = MaterialTheme.colorScheme.secondary,
-                                trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                            )
-                        }
-                    }
-                }
-            }
-
-            Column(
-                modifier = Modifier
-                    .padding(13.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = currentTestType,
-                    fontFamily = Roboto,
-                    fontSize = 25.sp,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = Color.Black
-                )
-
-                Text(
-                    text = "Answered Test Types: $numOfTestTypes/$totalNumOfTestTypes",
-                    fontFamily = Roboto,
-                    fontSize = 15.sp,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
-                )
-
-                Text(
-                    text = "Answered Questions: $answeredQuestions/$questioneach",
-                    fontFamily = Roboto,
-                    fontSize = 15.sp,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    LinearProgressIndicator(
-                        progress = overallProgress, // Reflect overall test progress
-                        modifier = Modifier
-                            .height(10.dp)
-                            .width(260.dp),
-                        color = Color(0xFFFFFFFF),
-                        trackColor = Color.DarkGray,
-                    )
-                    // Display the formatted time
                     Text(
-                        text = " $timeText ",
+                        text = "Loading Aptitude Test,\n please wait...",
                         fontFamily = Roboto,
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    CircularProgressIndicator(
+                        modifier = Modifier.width(64.dp),
+                        color = MaterialTheme.colorScheme.secondary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    )
+                }
+            } else {
+
+
+                Column(
+                    modifier = Modifier
+                        .padding(13.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = currentTestType,
+                        fontFamily = Roboto,
+                        fontSize = 25.sp,
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.ExtraBold,
                         color = Color.Black
                     )
-                }
-            }
 
+                    Text(
+                        text = "Answered Test Types: $numOfTestTypes/$totalNumOfTestTypes",
+                        fontFamily = Roboto,
+                        fontSize = 15.sp,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Black
+                    )
 
+                    Text(
+                        text = "Answered Questions: $answeredQuestions/$questioneach",
+                        fontFamily = Roboto,
+                        fontSize = 15.sp,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Black
+                    )
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                MultipleChoiceQuestion(
-                    questions,
-                    selectedAnswers.value[currentTestType] ?: mutableMapOf()
-                ) { selectedOption, question ->
-                    selectedAnswers.value[currentTestType]?.set(question, selectedOption)
-                }
-            }
+                   /* Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {*/
 
-            Box(
-                modifier = Modifier
-                    .height(85.dp)
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .background(color = Color(0xFF2962FF))
-                    .padding(16.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.clickable {
-                            val currentTestType = testTypes.getOrNull(currentIndex.value)
-                            val questions = questionsMap[currentTestType] ?: emptyList()
-                            val answers = selectedAnswers.value[currentTestType] ?: emptyMap()
-                            if (answers.size == questions.size) {
-                                if (currentIndex.value < testTypes.size - 1) {
-                                    currentIndex.value++
-                                }
-                            } else {
-                                showDialog = true
-                            }
-                        }
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.clickable {
-                                if (currentIndex.value > 0) {
-                                    currentIndex.value--
-                                }
-                            }
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.previous),
-                                contentDescription = "Previous",
-                                tint = Color.White
-                            )
-                            Text(
-                                text = "Prev",
-                                fontFamily = Roboto,
-                                textAlign = TextAlign.Center,
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-
-                    if (allTestTypesAnswered) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.clickable {
-                                controller.checkAnswersAndStoreResults(
-                                    userId = userId,
-                                    selectedAnswers = selectedAnswers.value as Map<String, Map<String, String>>
-                                )
-                                navController.navigate("RecommendationActivity")
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.CheckCircle,
-                                contentDescription = "Submit",
-                                tint = Color.White
-                            )
-                            Text(
-                                text = "Submit",
-                                fontFamily = Roboto,
-                                textAlign = TextAlign.Center,
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.clickable {
-                            val currentTestType = testTypes.getOrNull(currentIndex.value)
-                            val questions = questionsMap[currentTestType] ?: emptyList()
-                            val answers = selectedAnswers.value[currentTestType] ?: emptyMap()
-                            if (answers.size == questions.size) {
-                                if (currentIndex.value < testTypes.size - 1) {
-                                    currentIndex.value++
-                                }
-                            } else {
-                                showDialog = true
-                            }
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.next),
-                            contentDescription = "Next",
-                            tint = Color.White
+                        LinearProgressIndicator(
+                            progress = overallProgress, // Reflect overall test progress
+                            modifier = Modifier
+                                .height(10.dp)
+                                .width(260.dp),
+                            color = Color(0xFFFFFFFF),
+                            trackColor = Color.DarkGray,
                         )
+                       /* // Display the formatted time
                         Text(
-                            text = "Next",
+                            text = " $timeText ",
                             fontFamily = Roboto,
+                            fontSize = 20.sp,
                             textAlign = TextAlign.Center,
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Color.Black
                         )
+
+
+                    }*/
+                }
+
+
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    MultipleChoiceQuestion(
+                        questions,
+                        selectedAnswers.value[currentTestType] ?: mutableMapOf()
+                    ) { selectedOption, question ->
+                        selectedAnswers.value[currentTestType]?.set(question, selectedOption)
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .height(85.dp)
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .background(color = Color(0xFF2962FF))
+                        .padding(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.clickable {
+                                val currentTestType = testTypes.getOrNull(currentIndex.value)
+                                val questions = questionsMap[currentTestType] ?: emptyList()
+                                val answers = selectedAnswers.value[currentTestType] ?: emptyMap()
+                                if (answers.size == questions.size) {
+                                    if (currentIndex.value < testTypes.size - 1) {
+                                        currentIndex.value++
+                                    }
+                                } else {
+                                    showDialog = true
+                                }
+                            }
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.clickable {
+                                    if (currentIndex.value > 0) {
+                                        currentIndex.value--
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.previous),
+                                    contentDescription = "Previous",
+                                    tint = Color.White
+                                )
+                                Text(
+                                    text = "Prev",
+                                    fontFamily = Roboto,
+                                    textAlign = TextAlign.Center,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+
+                        if (allTestTypesAnswered) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.clickable {
+                                    controller.checkAnswersAndStoreResults(
+                                        userId = userId,
+                                        selectedAnswers = selectedAnswers.value as Map<String, Map<String, String>>
+                                    )
+                                    navController.navigate("RecommendationActivity")
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.CheckCircle,
+                                    contentDescription = "Submit",
+                                    tint = Color.White
+                                )
+                                Text(
+                                    text = "Submit",
+                                    fontFamily = Roboto,
+                                    textAlign = TextAlign.Center,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+
+
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.clickable {
+                                val currentTestType = testTypes.getOrNull(currentIndex.value)
+                                val questions = questionsMap[currentTestType] ?: emptyList()
+                                val answers = selectedAnswers.value[currentTestType] ?: emptyMap()
+                                if (answers.size == questions.size) {
+                                    if (currentIndex.value < testTypes.size - 1) {
+                                        currentIndex.value++
+                                    }
+                                } else {
+                                    showDialog = true
+                                }
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.next),
+                                contentDescription = "Next",
+                                tint = Color.White
+                            )
+                            Text(
+                                text = "Next",
+                                fontFamily = Roboto,
+                                textAlign = TextAlign.Center,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
             }

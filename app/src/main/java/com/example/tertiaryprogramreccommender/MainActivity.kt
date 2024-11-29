@@ -11,8 +11,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,8 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.example.tertiaryprogramreccommender.ui.theme.TertiaryProgramRecommenderTheme
 
@@ -81,22 +90,73 @@ class MainActivity : ComponentActivity() {
     // Composable for displaying a no internet screen with a retry button
     @Composable
     fun NoInternetScreen(onRetryClick: () -> Unit) {
-        Box(
+        Card(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            shape = RoundedCornerShape(0.dp) // Full-screen card with no rounded corners
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                Text(text = "No internet connection available!", color = Color.Red)
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = onRetryClick) {
-                    Text(text = "Retry")
+                // Background Image
+                Image(
+                    painter = painterResource(id = R.drawable.background),
+                    contentDescription = "Background Image",
+                    contentScale = ContentScale.Crop, // Better cropping for full-screen visuals
+                    modifier = Modifier.fillMaxSize()
+                )
+
+                // Foreground Content
+                Column(
+                    modifier = Modifier
+                        .padding(24.dp) // Consistent padding for content
+                        .background(
+                            color = Color.White.copy(alpha = 0.8f), // Semi-transparent background
+                            shape = RoundedCornerShape(16.dp) // Rounded corners
+                        )
+                        .padding(16.dp), // Inner padding
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    // Title
+                    Text(
+                        text = "No Internet Connection!",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Image
+                    Image(
+                        painter = painterResource(id = R.drawable.nointernet),
+                        contentDescription = "No Internet Illustration",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .fillMaxWidth(0.6f) // Adjust width for better layout
+                            .aspectRatio(1f) // Maintain aspect ratio
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Retry Button
+                    Button(
+                        onClick = onRetryClick,
+                        modifier = Modifier.fillMaxWidth(0.5f), // Adjust button width
+                    ) {
+                        Text(
+                            text = "Retry",
+                            color = Color.White,
+                            fontSize = 16.sp
+                        )
+                    }
                 }
             }
         }
     }
+
 
 
     @Composable
