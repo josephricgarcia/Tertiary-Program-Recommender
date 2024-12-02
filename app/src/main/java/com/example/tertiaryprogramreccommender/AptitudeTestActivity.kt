@@ -133,30 +133,35 @@ fun AptitudeTestActivity(navController: NavHostController, controller: AptitudeT
                 )
 
                 if (isLoading) {
-                    Column(
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-
+                            .fillMaxSize()
+                            .padding(16.dp), // Add padding to avoid the content touching edges
+                        contentAlignment = Alignment.Center  // This ensures the content is centered within the Box
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxSize()
                         ) {
-                        Text(
-                            text = "Loading Aptitude Test,\n please wait...",
-                            fontFamily = Roboto,
-                            fontSize = 18.sp,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        CircularProgressIndicator(
-                            modifier = Modifier.width(64.dp),
-                            color = MaterialTheme.colorScheme.secondary,
-                            trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                        )
+                            Text(
+                                text = "Loading Aptitude Test,\n please wait...",
+                                fontFamily = Roboto,
+                                fontSize = 20.sp,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = Color.Black
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(64.dp), // Set a size for the circular indicator
+                                color = MaterialTheme.colorScheme.secondary,
+                                trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                            )
+                        }
                     }
+
                 } else {
 
                     // Only refresh the questions once
@@ -402,7 +407,6 @@ fun AptitudeTestActivity(navController: NavHostController, controller: AptitudeT
         // Navigate to the next screen
         navController.navigate("RecommendationActivity")
     }
-
 
     @Composable
     fun MultipleChoiceQuestion(

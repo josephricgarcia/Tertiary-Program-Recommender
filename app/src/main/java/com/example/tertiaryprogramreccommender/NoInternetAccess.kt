@@ -1,5 +1,6 @@
 package com.example.tertiaryprogramreccommender
 
+import Roboto
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -59,11 +60,12 @@ fun NoInternetScreen(onRetryClick: () -> Unit) {
             ) {
                 // Title
                 Text(
-                    text = "No Internet Connection!",
-                    color = Color.Black,
+                    text = "No Internet Connection.\nPlease check your connection and try again.",
+                    fontFamily = Roboto,
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
-                    textAlign = TextAlign.Center
+                    color = Color.Black
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))

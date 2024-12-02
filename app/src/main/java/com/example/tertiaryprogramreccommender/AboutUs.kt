@@ -220,21 +220,12 @@ fun AboutUsCard(page: Int) {
                         painter = painterResource(id = R.drawable.previous),
                         contentDescription = "Previous",
                         tint = Color.Black
-                    )
-
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    Icon(
-                        painter = painterResource(id = R.drawable.next),
-                        contentDescription = "Next",
-                        tint = Color.Black
-                    )
-                }
-
-                }
-                }
+                            )
+                        }
+                    }
                 }
             }
+        }
     }
 }
 

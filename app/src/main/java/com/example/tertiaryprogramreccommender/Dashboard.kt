@@ -152,14 +152,14 @@ fun Dashboard(
                                                             "2. Customer Service Skills\n" +
                                                             "3. Educational Psychology\n" +
                                                             "4. Environmental Awareness\n" +
-                                                            "5. Geographical Ecological Knowledge\n" +
+                                                            "5. Geographical Knowledge\n" +
                                                             "6. Logical Reasoning\n" +
                                                             "7. Mathematical Aptitude\n" +
                                                             "8. Mathematical Reasoning\n" +
                                                             "9. Practical Knowledge\n"+
                                                             "10. Teaching Aptitude\n" +
                                                             "11. Teaching Methods\n" +
-                                                            "12. Teaching Principles in Home Economics",
+                                                            "12. Home Economics",
                                                     fontSize = 14.sp,
                                                     fontFamily = Roboto,
                                                     textAlign = TextAlign.Left,
