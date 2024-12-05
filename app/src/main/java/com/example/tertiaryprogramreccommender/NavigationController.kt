@@ -46,10 +46,10 @@ fun NavigationController(modifier: Modifier = Modifier, user: User) {
             RecommendationActivity(navigationController, user)
         }
 
-        composable("Insights/{programName}") { backStackEntry ->
+        composable("InsightsActivity/{programName}") { backStackEntry ->
             val programName = backStackEntry.arguments?.getString("programName")
             if (programName != null) {
-                Insights(navigationController, programName)
+                InsightsActivity(navigationController, programName)
             }
         }
 

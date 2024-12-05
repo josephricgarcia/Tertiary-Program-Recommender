@@ -346,7 +346,7 @@ fun RecommendationActivity(
 
                                                                 TextButton(
                                                                     onClick = {
-                                                                        navController.navigate("Insights/${program.first}")
+                                                                        navController.navigate("InsightsActivity/${program.first}")
                                                                     },
                                                                 ) {
                                                                     Text(
