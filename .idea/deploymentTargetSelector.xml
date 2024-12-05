@@ -4,6 +4,14 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2024-12-03T02:39:41.156795300Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\JOSEPH RIC\.android\avd\temp.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
       </SelectionState>
       <SelectionState runConfigName="MainActivity">
         <option name="selectionMode" value="DROPDOWN" />
@@ -18,10 +26,10 @@
       </SelectionState>
       <SelectionState runConfigName="Tertiary_Program_Recommender.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-11-11T14:49:07.040400900Z">
+        <DropdownSelection timestamp="2024-12-03T02:20:00.952418400Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=79KZKJY5RGWWGQLB" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\JOSEPH RIC\.android\avd\Pixel_8_API_35.avd" />
             </handle>
           </Target>
         </DropdownSelection>

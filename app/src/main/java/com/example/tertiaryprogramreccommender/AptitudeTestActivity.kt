@@ -224,8 +224,8 @@ fun AptitudeTestActivity(navController: NavHostController, controller: AptitudeT
                                 modifier = Modifier
                                     .height(10.dp)
                                     .width(260.dp),
-                                color = Color(0xFFFFFFFF),
-                                trackColor = Color.DarkGray,
+                                color = Color(0xFF00C853),
+                                trackColor = Color.Red,
                             )
                             // Display the formatted time
                             Text(
