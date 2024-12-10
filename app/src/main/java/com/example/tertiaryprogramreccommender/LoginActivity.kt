@@ -158,7 +158,7 @@ fun LoginActivity(
                         singleLine = true
                     )
 
-                    Spacer(modifier = Modifier.height(15.dp))
+                    Spacer(modifier = Modifier.height(5.dp))
 
                     // Password Input
                     OutlinedTextField(
@@ -214,7 +214,7 @@ fun LoginActivity(
                         Text(
                             text = "Forgot Password?",
                             fontFamily = Roboto,
-                            fontWeight = FontWeight.Normal,
+                            fontWeight = FontWeight.Bold,
                             modifier = Modifier.clickable {
                                 navController.navigate("ForgotPasswordActivity")
                             }
@@ -232,7 +232,10 @@ fun LoginActivity(
                         modifier = Modifier.size(300.dp, 40.dp),
                         colors = ButtonDefaults.buttonColors(Color(0xFF011952))
                     ) {
-                        Text(text = "SIGN IN", fontFamily = Roboto)
+                        Text(text = "SIGN IN",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = Roboto)
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))

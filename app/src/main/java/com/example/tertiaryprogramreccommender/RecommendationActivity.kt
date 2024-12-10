@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -34,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -60,339 +60,314 @@ fun RecommendationActivity(
         }
     }
 
-    // Get the current authenticated user's ID
     val userId = FirebaseAuth.getInstance().currentUser?.uid
-
-    // State to store fetched scores as strings (e.g., "5 out of 10")
     val scoresState = remember { mutableStateOf<Map<String, Pair<Int, Int>>>(emptyMap()) }
-
-    // State for loading indicator
     val isLoading = remember { mutableStateOf(true) }
-
-    // State to store the top programs
     val topPrograms = remember { mutableStateOf<List<Pair<String, Double>>>(emptyList()) }
 
-    val recommendation = Recommendation()
+    // Instantiate model and controller
+    val model = RecommendationModel()
+    val controller = RecommendationController(model)
+
+    // Fetch data through the controller
     LaunchedEffect(userId) {
         userId?.let {
-            recommendation.fetchUserScores { scores ->
+            controller.getUserScores { scores ->
                 scoresState.value = scores
-                isLoading.value = false  // Set loading to false once data is fetched
-                println("Scores fetched: $scores")
-
-                // Fetch the ranking of programs based on the scores
-                recommendation.programRanking(scores) { rankedPrograms ->
+                controller.getRecommendedPrograms { rankedPrograms ->
                     topPrograms.value = rankedPrograms
+                    isLoading.value = false // Set loading to false once data is fetched
                 }
             }
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        // Background Image inside an OutlinedCard
-        OutlinedCard(
-            modifier = Modifier.fillMaxSize(),
-            shape = RoundedCornerShape(0.dp),
-            border = BorderStroke(1.dp, Color.Black)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.background),
-                contentDescription = "Background Image",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
+    val context = LocalContext.current
+    var isConnected by remember { mutableStateOf(isNetworkAvailable(context)) }
+
+    if (!isConnected) {
+        NoInternetScreen {
+            isConnected = isNetworkAvailable(context)
         }
-
-
-        val context = LocalContext.current
-        var isConnected by remember { mutableStateOf(isNetworkAvailable(context)) }
-
-        if (!isConnected) {
-            // Show the no internet screen
-            NoInternetScreen {
-                // Recheck internet connection
-                isConnected = isNetworkAvailable(context)
+    } else {
+        Scaffold(
+            bottomBar = {
+                BottomNavigationBar(navController)
             }
-        } else {
-
-            Scaffold(
-                bottomBar = {
-                    BottomNavigationBar(navController)
-                }
-            ) { paddingValues ->
+        ) { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
                 Card(
                     modifier = Modifier.fillMaxSize(),
-                    shape = RoundedCornerShape(0.dp)
+                    shape = RoundedCornerShape(0.dp),
+                    border = BorderStroke(1.dp, Color.Unspecified)
                 ) {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        Image(
-                            painter = painterResource(id = R.drawable.background),
-                            contentDescription = "Background Image",
-                            contentScale = ContentScale.FillBounds,
-                            modifier = Modifier.fillMaxSize()
-                        )
+                    Image(
+                        painter = painterResource(id = R.drawable.background),
+                        contentDescription = "Background Image",
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
 
-                        Box(
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = CenterHorizontally
+                ) {
+                    Text(
+                        text = "RECOMMENDATIONS",
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        textAlign = TextAlign.Center,
+                        color = Color.Black,
+                        fontFamily = Roboto
+                    )
+
+                    if (isLoading.value) {
+                        Column(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(16.dp)
-                                .padding(bottom = paddingValues.calculateBottomPadding()),
-                            contentAlignment = Alignment.TopCenter
+                                .padding(16.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Column(
-                                horizontalAlignment = CenterHorizontally,
-                                verticalArrangement = Arrangement.Top,
-                                modifier = Modifier.fillMaxSize()
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .align(CenterHorizontally)
+                            )
+                            Text(
+                                text = "Loading Recommendations...",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = Color.Black
+                            )
+                        }
+                    } else {
+                        DisplayScores(scoresState.value)
+
+                        if (topPrograms.value.isEmpty()) {
+                            Text(
+                                text = "No Programs Passed. Please retake the test.",
+                                color = Color.Red,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.BottomCenter
                             ) {
-                                Text(
-                                    text = "RECOMMENDATIONS",
-                                    fontSize = 30.sp,
-                                    fontWeight = FontWeight.ExtraBold,
-                                    fontFamily = Roboto,
-                                    textAlign = TextAlign.Center,
-                                    color = Color.Black
-                                )
-
-                                // Scores Section
-                                Column(
-                                    horizontalAlignment = Alignment.Start,
-                                    verticalArrangement = Arrangement.Top,
-                                    modifier = Modifier.fillMaxWidth()
+                                Button(
+                                    onClick = {
+                                        navController.navigate("AptitudeTestActivity")
+                                    },
+                                    colors = ButtonDefaults.buttonColors(Color(0xFF011952))
                                 ) {
-                                    // Loading indicator with text while fetching scores
-                                    if (isLoading.value) {
-
-                                        Column(
-                                            horizontalAlignment = CenterHorizontally,
-                                            verticalArrangement = Arrangement.Center,
-                                            modifier = Modifier.fillMaxSize()
-                                                .padding(16.dp)
-                                        ) {
-                                            CircularProgressIndicator()
-                                            Spacer(modifier = Modifier.height(16.dp))
-                                            Text(
-                                                text = "Gathering Scores, please wait",
-                                                fontSize = 18.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                fontFamily = Roboto
-                                            )
-                                        }
-                                    } else {
-                                        OutlinedCard(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(16.dp)
-                                                .height(340.dp)
-                                        ) {
-
-                                            Column(
-                                                modifier = Modifier
-                                                    .padding(16.dp)
-                                                    .fillMaxWidth()
-                                            ) {
-
-                                                Text(
-                                                    text = "Scores",
-                                                    fontSize = 20.sp,
-                                                    fontWeight = FontWeight.Bold,
-                                                    fontFamily = Roboto,
-                                                    modifier = Modifier.align(CenterHorizontally)
-                                                )
-
-                                                // Display scores fetched from Firebase
-                                                if (scoresState.value.isNotEmpty()) {
-                                                    scoresState.value.forEach { (testType, score) ->
-                                                        val (correctAnswers, totalQuestions) = score
-
-                                                        Row(
-                                                            verticalAlignment = Alignment.CenterVertically,
-                                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                                            modifier = Modifier.fillMaxWidth()
-                                                        ) {
-
-                                                            Column {
-
-                                                                Text(
-                                                                    text = "$testType ",
-                                                                    fontSize = 13.sp,
-                                                                    fontWeight = FontWeight.Bold,
-                                                                    fontFamily = Roboto,
-                                                                )
-                                                            }
-                                                            Text(
-                                                                text = "$correctAnswers/$totalQuestions",
-                                                                fontSize = 13.sp,
-                                                                fontWeight = FontWeight.Bold,
-                                                                fontFamily = Roboto,
-                                                            )
-                                                        }
-                                                    }
-                                                    Spacer(modifier = Modifier.height(8.dp))
-
-                                                } else {
-                                                    Spacer(modifier = Modifier.height(16.dp))
-                                                    Text(
-                                                        text = "No Scores Yet",
-                                                        modifier = Modifier.align(CenterHorizontally),
-                                                        fontSize = 15.sp,
-                                                        fontWeight = FontWeight.Bold,
-                                                        fontFamily = Roboto,
-                                                        color = Color.Red
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    // Fetch real ranking of passed programs and display
-                                    Column(
-                                        horizontalAlignment = Alignment.Start,
-                                        verticalArrangement = Arrangement.Top,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-
-                                        // Display message if no programs are passed
-                                        if (topPrograms.value.isEmpty()) {
-                                            OutlinedCard(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(16.dp)
-                                                    .height(220.dp)
-                                            ) {
-                                                Text(
-                                                    text = "No Programs Passed, Please Try Again",
-                                                    fontSize = 15.sp,
-                                                    fontWeight = FontWeight.Bold,
-                                                    fontFamily = Roboto,
-                                                    color = Color.Red,
-                                                    textAlign = TextAlign.Center,
-                                                    modifier = Modifier.fillMaxWidth()
-                                                )
-                                            }
-                                        } else {
-                                            // Display the list of top programs
-                                            OutlinedCard(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(16.dp)
-                                                    .height(220.dp)
-                                            ) {
-
-                                                Column(
-                                                    modifier = Modifier
-                                                        .padding(horizontal = 16.dp)
-                                                        .fillMaxSize()
-                                                        .verticalScroll(rememberScrollState())
-                                                ) {
-
-                                                    Box(
-                                                        modifier = Modifier.fillMaxWidth()
-                                                    ) {
-                                                        Text(
-                                                            text = "Passed Programs",
-                                                            modifier = Modifier
-                                                                .padding(top = 16.dp)
-                                                                .align(Alignment.Center),
-                                                            fontSize = 20.sp,
-                                                            fontFamily = Roboto,
-                                                            fontWeight = FontWeight.ExtraBold,
-                                                        )
-                                                    }
-
-                                                    topPrograms.value.forEachIndexed { index, program ->
-                                                        Row(
-                                                            modifier = Modifier.fillMaxWidth(),
-                                                            verticalAlignment = Alignment.CenterVertically,
-                                                            horizontalArrangement = Arrangement.SpaceBetween // Distribute space between components
-                                                        ) {
-                                                            // Program Info
-                                                            Row(
-                                                                verticalAlignment = Alignment.CenterVertically
-                                                            ) {
-                                                                Text(
-                                                                    text = "Top ${index + 1}:",
-                                                                    fontSize = 15.sp,
-                                                                    fontWeight = FontWeight.Bold,
-                                                                    color = Color(0xFF000000),
-                                                                    fontFamily = Roboto,
-                                                                )
-
-                                                                Spacer(modifier = Modifier.width(16.dp)) // Spacing between texts
-
-                                                                Text(
-                                                                    text = "${program.first} ",
-                                                                    fontSize = 15.sp,
-                                                                    fontWeight = FontWeight.Bold,
-                                                                    color = Color(0xFF000000),
-                                                                    fontFamily = Roboto,
-                                                                )
-                                                            }
-
-                                                            // Percentage and View Button
-                                                            Row(
-                                                                verticalAlignment = Alignment.CenterVertically
-                                                            ) {
-                                                                Text(
-                                                                    text = "${program.second.toInt()}%",
-                                                                    fontSize = 15.sp,
-                                                                    fontWeight = FontWeight.Bold,
-                                                                    color = Color(0xFF000000),
-                                                                    fontFamily = Roboto,
-                                                                    modifier = Modifier.width(40.dp), // Fixed width to align percentages
-                                                                    textAlign = TextAlign.End // Align percentage text to the end
-                                                                )
-
-                                                                Spacer(modifier = Modifier.width(20.dp))
-
-                                                                TextButton(
-                                                                    onClick = {
-                                                                        navController.navigate("InsightsActivity/${program.first}")
-                                                                    },
-                                                                ) {
-                                                                    Text(
-                                                                        text = "View",
-                                                                        color = Color(0xFF011952),
-                                                                        fontFamily = Roboto,
-                                                                        fontWeight = FontWeight.ExtraBold,
-                                                                        fontSize = 15.sp
-                                                                    )
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        Box(
-                                            modifier = Modifier.fillMaxSize(),
-                                            contentAlignment = Alignment.BottomCenter
-                                        ) {
-                                            Button(
-                                                onClick = {
-                                                    navController.navigate("AptitudeTestActivity")
-                                                },
-                                                colors = ButtonDefaults.buttonColors(
-                                                    Color(
-                                                        0xFF011952
-                                                    )
-                                                )
-                                            ) {
-                                                Text(
-                                                    text = "Retake Aptitude Test",
-                                                    fontFamily = Roboto,
-                                                    fontSize = 15.sp,
-                                                    fontWeight = FontWeight.Bold
-                                                )
-                                            }
-                                        }
-                                    }
+                                    Text(
+                                        text = "Retake Aptitude Test",
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        fontFamily = Roboto
+                                    )
                                 }
                             }
+                        } else {
+                            DisplayTopPrograms(navController, topPrograms.value)
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = {
+                                navController.navigate("AptitudeTestActivity")
+                            },
+                            colors = ButtonDefaults.buttonColors(Color(0xFF011952))
+                        ) {
+                            Text(
+                                text = "Retake Aptitude Test",
+                                fontFamily = Roboto,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
                 }
             }
+        }
+    }
+}
+
+
+@Composable
+fun DisplayScores(scores: Map<String, Pair<Int, Int>>) {
+    if (scores.isEmpty()) {
+
+        Spacer(modifier = Modifier.height(300.dp))
+
+        Text(
+            text = "No Scores Available",
+            color = Color.Red,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+    } else {
+        OutlinedCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "YOUR SCORES",
+                    modifier = Modifier.align(CenterHorizontally),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                scores.forEach { (testType, score) ->
+                    val (correctAnswers, totalQuestions) = score
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = testType, fontSize = 16.sp, fontWeight = FontWeight.Normal)
+                        Text(text = "$correctAnswers / $totalQuestions", fontSize = 16.sp)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DisplayTopPrograms(
+    navController: NavHostController,
+    programs: List<Pair<String, Double>>
+) {
+    if (programs.isEmpty()) {
+        Text(
+            text = "No Programs Passed. Please retake the test.",
+            color = Color.Red,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Button(
+                onClick = {
+                    navController.navigate("AptitudeTestActivity")
+                },
+                colors = ButtonDefaults.buttonColors(
+                    Color(
+                        0xFF011952
+                    )
+                )
+            ) {
+                Text(
+                    text = "Retake Aptitude Test",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = Roboto
+                )
+            }
+        }
+
+    } else {
+        OutlinedCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+
+            Text(
+                text = "RECOMMENDED PROGRAMS",
+                modifier = Modifier.padding(top = 16.dp)
+                    .align(CenterHorizontally),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .padding(16.dp)
+                    .verticalScroll(
+                        rememberScrollState()
+                    )
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+
+                    programs.forEachIndexed { index, program ->
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "Top ${index + 1}: ${program.first}",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.ExtraBold
+                            )
+                            TextButton(
+                                onClick = {
+                                    navController.navigate("InsightsActivity/${program.first}")
+                                }
+                            ) {
+                                Text(
+                                    text = "View",
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontFamily = Roboto,
+                                    color = Color(0xFF304FFE)
+                                )
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Button(
+                    onClick = {
+                        navController.navigate("AptitudeTestActivity")
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        Color(
+                            0xFF011952
+                        )
+                    )
+                ) {
+                    Text(
+                        text = "Retake Aptitude Test",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = Roboto
+                    )
+
+            }
+
         }
     }
 }

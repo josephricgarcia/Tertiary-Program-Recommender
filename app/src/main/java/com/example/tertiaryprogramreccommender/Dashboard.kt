@@ -238,7 +238,7 @@ fun Dashboard(
                             ) {
                                 Text(
                                     text = "Start Aptitude Test",
-                                    fontSize = 20.sp,
+                                    fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold,
                                     fontFamily = Roboto
                                 )

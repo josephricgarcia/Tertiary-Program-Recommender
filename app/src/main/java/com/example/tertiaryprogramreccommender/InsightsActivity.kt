@@ -44,8 +44,7 @@ fun InsightsActivity(
 
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -118,14 +117,21 @@ fun InsightsActivity(
                             fontWeight = FontWeight.Bold,
                         )
 
-                        Spacer(modifier = Modifier.height(5.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                        Text(
-                            text = programDetails,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Normal,
-                            textAlign = TextAlign.Left
-                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .verticalScroll(rememberScrollState())
+                        ) {
+
+                            Text(
+                                text = programDetails,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Left
+                            )
+                        }
                     }
                 }
             }

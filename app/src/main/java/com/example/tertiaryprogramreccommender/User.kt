@@ -11,15 +11,15 @@ class User : ViewModel() {
 
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
-    private val _authState = MutableLiveData<AuthState>()
-    val authState: LiveData<AuthState> get() = _authState
+    val mutableAuthState = MutableLiveData<AuthState>()
+    val authState: LiveData<AuthState> get() = mutableAuthState
 
     init {
         validateUser()
     }
 
     private fun validateUser() {
-        _authState.value = if (auth.currentUser != null) {
+        mutableAuthState.value = if (auth.currentUser != null) {
             AuthState.Authenticated
         } else {
             AuthState.Unauthenticated
@@ -30,26 +30,26 @@ class User : ViewModel() {
     fun handleLogin(email: String, password: String) {
         when {
             email.isEmpty() -> {
-                _authState.value = AuthState.Error("Email cannot be empty.")
+                mutableAuthState.value = AuthState.Error("Email cannot be empty.")
                 return
             }
             !validateEmail(email) -> {
-                _authState.value = AuthState.Error("Invalid email format.")
+                mutableAuthState.value = AuthState.Error("Invalid email format.")
                 return
             }
             password.isEmpty() -> {
-                _authState.value = AuthState.Error("Password cannot be empty.")
+                mutableAuthState.value = AuthState.Error("Password cannot be empty.")
                 return
             }
             password.length < 6 -> {
-                _authState.value = AuthState.Error("Password must be at least 6 characters.")
+                mutableAuthState.value = AuthState.Error("Password must be at least 6 characters.")
                 return
             }
             else -> {
-                _authState.value = AuthState.Loading
+                mutableAuthState.value = AuthState.Loading
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
-                        _authState.value = if (task.isSuccessful) {
+                        mutableAuthState.value = if (task.isSuccessful) {
                             AuthState.Authenticated
                         } else {
                             AuthState.Error(task.exception?.localizedMessage ?: "Login failed.")
@@ -63,35 +63,35 @@ class User : ViewModel() {
     fun handleSignup(username: String, email: String, password: String, confirmPassword: String) {
         when {
             username.isEmpty() -> {
-                _authState.value = AuthState.Error("Username cannot be empty.")
+                mutableAuthState.value = AuthState.Error("Username cannot be empty.")
                 return
             }
             email.isEmpty() -> {
-                _authState.value = AuthState.Error("Email cannot be empty.")
+                mutableAuthState.value = AuthState.Error("Email cannot be empty.")
                 return
             }
             !validateEmail(email) -> {
-                _authState.value = AuthState.Error("Invalid email format.")
+                mutableAuthState.value = AuthState.Error("Invalid email format.")
                 return
             }
             password.isEmpty() -> {
-                _authState.value = AuthState.Error("Password cannot be empty.")
+                mutableAuthState.value = AuthState.Error("Password cannot be empty.")
                 return
             }
             password.length < 6 -> {
-                _authState.value = AuthState.Error("Password must be at least 6 characters.")
+                mutableAuthState.value = AuthState.Error("Password must be at least 6 characters.")
                 return
             }
             confirmPassword.isEmpty() -> {
-                _authState.value = AuthState.Error("Please confirm your password.")
+                mutableAuthState.value = AuthState.Error("Please confirm your password.")
                 return
             }
             password != confirmPassword -> {
-                _authState.value = AuthState.Error("Passwords do not match.")
+                mutableAuthState.value = AuthState.Error("Passwords do not match.")
                 return
             }
             else -> {
-                _authState.value = AuthState.Loading
+                mutableAuthState.value = AuthState.Loading
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
@@ -104,17 +104,17 @@ class User : ViewModel() {
                                 )
                                 databaseReference.child("users").child(userId).setValue(userMap)
                                     .addOnCompleteListener { dbTask ->
-                                        _authState.value = if (dbTask.isSuccessful) {
+                                        mutableAuthState.value = if (dbTask.isSuccessful) {
                                             AuthState.Authenticated
                                         } else {
                                             AuthState.Error("Failed to save user data: ${dbTask.exception?.message}")
                                         }
                                     }
                             } else {
-                                _authState.value = AuthState.Error("Failed to get user ID.")
+                                mutableAuthState.value = AuthState.Error("Failed to get user ID.")
                             }
                         } else {
-                            _authState.value = handleFirebaseException(task.exception)
+                            mutableAuthState.value = handleFirebaseException(task.exception)
                         }
                     }
             }
@@ -124,8 +124,8 @@ class User : ViewModel() {
 
     // Handle error message
     fun handlePromptMessageError() {
-        if (_authState.value is AuthState.Error) {
-            _authState.value = AuthState.Unauthenticated
+        if (mutableAuthState.value is AuthState.Error) {
+            mutableAuthState.value = AuthState.Unauthenticated
         }
     }
 
@@ -176,30 +176,30 @@ class User : ViewModel() {
             databaseReference.child("username").setValue(username)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        _authState.value = AuthState.Authenticated
+                        mutableAuthState.value = AuthState.Authenticated
                     } else {
-                        _authState.value = AuthState.Error("Failed to update username.")
+                        mutableAuthState.value = AuthState.Error("Failed to update username.")
                     }
                 }
         } else {
-            _authState.value = AuthState.Error("User not authenticated.")
+            mutableAuthState.value = AuthState.Error("User not authenticated.")
         }
     }
 
 
     private fun updatePassword(currentPassword: String, newPassword: String) {
         val user = auth.currentUser  ?: run {
-            _authState.value = AuthState.Error("User  not authenticated.")
+            mutableAuthState.value = AuthState.Error("User  not authenticated.")
             return
         }
 
         if (newPassword.length < 6) {
-            _authState.value = AuthState.Error("New password must be at least 6 characters long.")
+            mutableAuthState.value = AuthState.Error("New password must be at least 6 characters long.")
             return
         }
 
         val email = user.email ?: run {
-            _authState.value = AuthState.Error("User  email not found.")
+            mutableAuthState.value = AuthState.Error("User  email not found.")
             return
         }
 
@@ -210,17 +210,17 @@ class User : ViewModel() {
                 if (reAuthTask.isSuccessful) {
                     user.updatePassword(newPassword)
                         .addOnCompleteListener { updateTask ->
-                            _authState.value = if (updateTask.isSuccessful) {
+                            mutableAuthState.value = if (updateTask.isSuccessful) {
                                 AuthState.Authenticated
                             } else {
                                 AuthState.Error("Failed to update password: ${updateTask.exception?.localizedMessage}")
                             }
                         }
                 } else {
-                    _authState.value = AuthState.Error("Re-authentication failed. Please check your current password.")
+                    mutableAuthState.value = AuthState.Error("Re-authentication failed. Please check your current password.")
                 }
             }.addOnFailureListener { e ->
-                _authState.value = AuthState.Error("Error during re-authentication: ${e.localizedMessage}")
+                mutableAuthState.value = AuthState.Error("Error during re-authentication: ${e.localizedMessage}")
             }
     }
 
@@ -240,7 +240,7 @@ class User : ViewModel() {
 
     fun handleSignOut() {
         auth.signOut()
-        _authState.value = AuthState.Unauthenticated
+        mutableAuthState.value = AuthState.Unauthenticated
     }
 
     // Validate email format

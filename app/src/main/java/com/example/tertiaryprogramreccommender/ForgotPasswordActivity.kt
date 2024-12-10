@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -121,7 +122,7 @@ fun ForgotPasswordActivity(navController: NavHostController, user: User) {
                                 textAlign = TextAlign.Center,
                                 fontFamily = Roboto,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black,
+                                color = Black,
                                 fontSize = 15.sp
                             )
 
@@ -189,7 +190,8 @@ fun ForgotPasswordActivity(navController: NavHostController, user: User) {
                             },
                             textDecoration = TextDecoration.Underline,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = Roboto
+                            fontFamily = Roboto,
+                            color = Black
                         )
                     }
                 }

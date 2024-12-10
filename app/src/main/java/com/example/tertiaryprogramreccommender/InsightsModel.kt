@@ -18,43 +18,125 @@ class InsightsModel(
         )
 
         private fun defaultProgramDetails() = mapOf(
-            "BSCS" to "Foundational Skills: Learn core programming languages (Python, Java, C++) and build a solid math background (calculus, discrete math)." +
-                    "\nCore Topics: Expect to study algorithms, data structures, databases, and computer systems." +
-                    "\nSpecializations: Explore areas like AI, cybersecurity, data science, software engineering, networking, or game development." +
-                    "\nProblem Solving: Cultivate patience and critical thinking for debugging and complex problem-solving." +
-                    "\nContinuous Learning: Stay updated with new languages and tools through online courses and resources.",
+            "BSCS" to """
+            Bachelor of Science in Computer Science (BSCS)
 
-            "BSHM" to "Foundational Skills: Develop communication, leadership, and customer service skills to effectively manage hospitality settings." +
-                    "\nCore Topics: Study principles of management, event planning, food and beverage operations, and tourism." +
-                    "\nSpecializations: Explore areas like hotel management, culinary arts, event coordination, and tourism management." +
-                    "\nProblem Solving: Hone critical thinking and adaptability to handle guest needs and resolve on-the-spot issues." +
-                    "\nContinuous Learning: Keep up with industry trends and new hospitality technologies to enhance guest experiences.",
+            Reasoning Types: Logical Reasoning, Mathematical Aptitude
 
-            "BSES-CRM" to "Foundational Skills: Gain knowledge in environmental sciences, research methods, and conservation principles." +
-                    "\nCore Topics: Study ecology, environmental policy, coastal resource management, and sustainability." +
-                    "\nSpecializations: Explore areas like wildlife conservation, resource management, and environmental policy." +
-                    "\nProblem Solving: Develop analytical skills for environmental problem-solving and policy-making." +
-                    "\nContinuous Learning: Keep up with environmental trends and regulations to promote sustainability.",
+            Foundational Skills:
+            - Learn core programming languages (Python, Java, C++).
+            - Build a solid math background in calculus and discrete math.
 
-            "BSEd-Math" to "Foundational Skills: Develop strong mathematical foundations and analytical skills." +
-                    "\nCore Topics: Study advanced mathematics, including calculus, algebra, geometry, and statistics." +
-                    "\nSpecializations: Focus on areas like secondary education, curriculum design, or mathematics pedagogy." +
-                    "\nProblem Solving: Cultivate critical thinking and logic to present complex mathematical concepts in an accessible way." +
-                    "\nContinuous Learning: Stay updated with new educational approaches and mathematical advancements.",
+            Core Topics:
+            - Algorithms, data structures, databases, and computer systems.
 
-            "BTLed-HE" to "Foundational Skills: Acquire knowledge in home economics, management, and practical life skills." +
-                    "\nCore Topics: Study nutrition, family and consumer science, interior design, and entrepreneurship." +
-                    "\nSpecializations: Explore fields like culinary arts, fashion design, or community services." +
-                    "\nProblem Solving: Develop creativity and adaptability to provide solutions for real-life household and community challenges." +
-                    "\nContinuous Learning: Stay informed about trends in home economics and educational techniques.",
+            Specializations:
+            - AI, cybersecurity, data science, software engineering, networking, or game development.
 
-            "BEED" to "Foundational Skills: Build strong interpersonal and communication skills to work effectively with students and parents." +
-                    "\nCore Topics: Study curriculum development, child psychology, teaching strategies, and classroom management." +
-                    "\nSpecializations: Focus on elementary education, literacy, special education, or curriculum design." +
-                    "\nProblem Solving: Develop patience, creativity, and critical thinking to meet diverse student needs." +
-                    "\nContinuous Learning: Stay updated on educational methodologies and technology in education."
+            Key Skills:
+            - Critical thinking and patience for debugging.
+            - Continuous learning to stay updated with tools and languages.
+        """.trimIndent(),
+
+            "BSHM" to """
+            Bachelor of Science in Hospitality Management (BSHM)
+
+            Reasoning Types: Customer Service Skills, Business Management
+
+            Foundational Skills:
+            - Develop leadership and communication for hospitality settings.
+            - Master customer service excellence.
+
+            Core Topics:
+            - Management principles, event planning, food & beverage operations, and tourism.
+
+            Specializations:
+            - Hotel management, culinary arts, event coordination, and tourism management.
+
+            Key Skills:
+            - Adaptability to guest needs and industry trends.
+            - Problem-solving for real-time challenges.
+        """.trimIndent(),
+
+            "BSES-CRM" to """
+            Bachelor of Science in Environmental Science - Coastal Resource Management (BSES-CRM)
+
+            Reasoning Types: Environmental Awareness, Geographical Knowledge
+
+            Foundational Skills:
+            - Gain insights into environmental sciences and conservation principles.
+
+            Core Topics:
+            - Ecology, environmental policy, coastal resource management, and sustainability.
+
+            Specializations:
+            - Wildlife conservation, resource management, environmental policy.
+
+            Key Skills:
+            - Analytical problem-solving for environmental challenges.
+            - Keeping abreast of sustainability trends.
+        """.trimIndent(),
+
+            "BSEd-Math" to """
+            Bachelor of Secondary Education - Mathematics (BSEd-Math)
+
+            Reasoning Types: Mathematical Reasoning, Teaching Aptitude
+
+            Foundational Skills:
+            - Strong mathematical background with analytical reasoning.
+
+            Core Topics:
+            - Advanced math topics: calculus, algebra, geometry, and statistics.
+
+            Specializations:
+            - Curriculum design, secondary education, mathematics pedagogy.
+
+            Key Skills:
+            - Simplifying complex mathematical concepts for students.
+            - Continuous learning of modern teaching methods.
+        """.trimIndent(),
+
+            "BTLed-HE" to """
+            Bachelor of Technology and Livelihood Education - Home Economics (BTLed-HE)
+
+            Reasoning Types: Practical Knowledge, Home Economics
+
+            Foundational Skills:
+            - Home economics expertise and practical life skills.
+
+            Core Topics:
+            - Nutrition, consumer science, interior design, and entrepreneurship.
+
+            Specializations:
+            - Culinary arts, fashion design, or community services.
+
+            Key Skills:
+            - Creativity and adaptability for household and community challenges.
+            - Staying updated on educational and economic trends.
+        """.trimIndent(),
+
+            "BEED" to """
+            Bachelor of Elementary Education (BEED)
+
+            Reasoning Types: Educational Psychology, Teaching Methods
+
+            Foundational Skills:
+            - Interpersonal and communication skills for effective teaching.
+
+            Core Topics:
+            - Curriculum development, child psychology, teaching strategies, and classroom management.
+
+            Specializations:
+            - Elementary education, literacy, special education, or curriculum design.
+
+            Key Skills:
+            - Patience, creativity, and critical thinking for diverse student needs.
+            - Continuous development of modern teaching practices.
+        """.trimIndent()
         )
     }
+
+
 
     // Method to get the reasoning types for a given program
     fun getReasoningType(programName: String): Pair<String, String> {
